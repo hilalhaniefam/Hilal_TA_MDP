@@ -1,15 +1,58 @@
 import React, { Component } from "react";
-import axios from "axios";
 import { Modal } from "antd";
 import "antd/dist/antd.css";
 
 export default class DaftarMahasiswa extends Component {
   constructor(props) {
     super(props);
+    this.loadMahasiswa=this.loadMahasiswa.bind(this)
     this.state = {
-      listData: [],
+      listData: JSON.parse(localStorage.getItem('mahasiswa')),
       visible: false,
     };
+  }
+
+  loadMahasiswa() {
+    var list = [
+      {
+        nim: '21120118130078',
+        nama: 'Septian Nugraha',
+        ttl: 'Jakarta, 4 september 2000',
+        asal: 'Jakarta',
+        hobi: 'Futsal',
+        foto: '/septian.jpg'
+      },
+      {
+        nim: '21120118130055',
+        nama: 'Alvin Arrazy',
+        ttl: 'Medan, 20 Januari 2000',
+        asal: 'Medan',
+        hobi: 'Futsal',
+        foto: '/Alvin.png'
+      },
+      {
+      nim: '21120118140092',
+      nama: 'Yusuf Hammadi',
+      ttl: 'Depok, 17 Januari 2000',
+      asal: 'Depok',
+      hobi: 'Bermain Game',
+      foto: '/ucup.jpg'
+    },
+    {
+    nim: '21120118130047',
+    nama: 'Hilal Haniefam',
+    ttl:  'Cilacap, 2 September 2000',
+    asal: 'Cilacap',
+    hobi: 'Bermusik',
+    foto: '/Hilal.jpg'}
+    ]
+
+    localStorage.setItem('mahasiswa', JSON.stringify(list))
+    return dispatch => {
+      dispatch({
+        type: 'LOADING_MAHASISWA'
+      })
+    }
   }
 
 handleButton = (first_name) => {
@@ -18,29 +61,19 @@ handleButton = (first_name) => {
   handleModal = (results) => {
     this.setState({
       visible: true,
-    nama : results.first_name + ' ' + results.last_name,
+    nama : results.nama,
+    nim  : results.nim,
+    ttl  : results.ttl,
+    asal : results.asal,
+    hobi : results.hobi,
+    foto : results.foto
     });
   };
 
   componentDidMount() {
-    axios({
-      method: "get",
-      url: "https://reqres.in/api/users",
-      headers: {
-        accept: "*/*",
-      },
-    })
-      .then((data) => {
-        console.log(data.data);
-        this.setState({
-            listData: data.data.data,
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   }
   render() {
+    this.loadMahasiswa()
     return (
       <div style={{ backgroundColor: "white" }}>
         <div className="boxWhite" style={{ backgroundColor: "black" }}>
@@ -56,17 +89,19 @@ handleButton = (first_name) => {
             width={500}
           >
             <div style={{ textAlign: "left" }}>
-              <p style= {{ fontSize: 10}}>Nama Lengkap : {this.state.nama}</p>
-              <p style= {{ fontSize: 10}}>NIM          : </p>
-              <p style= {{ fontSize: 10}}>Alamat       : </p>
+              <p style= {{ fontSize: 13}}>Nama Lengkap : {this.state.nama}</p>
+              <p style= {{ fontSize: 13}}>NIM          : {this.state.nim}</p>
+              <p style= {{ fontSize: 13}}>TTL          : {this.state.ttl}</p>
+              <p style= {{ fontSize: 13}}>asal         : {this.state.asal}</p>
+              <img src={this.state.foto}></img>
             </div>
           </Modal>
 
-          {this.state.listData.map((results, index) => {
+          {this.state.listData.map((results) => {
             return (
               <div className="card" key={results.id} style={{ backgroundColor: "white" }}>
                 <div className="card-body">
-                  <h6 className="card-title" style={{ color: "black", fontSize: 16, fontWeight: 'bold', fontFamily: 'monospace' }}>Nama : {results.first_name} {results.last_name}</h6>
+                  <h6 className="card-title" style={{ color: "black", fontSize: 16, fontWeight: 'bold', fontFamily: 'monospace' }}>Nama : {results.nama}</h6>
                   <h6 className="card-subtitle mb-2 text-muted">
                   </h6>
                 </div>
